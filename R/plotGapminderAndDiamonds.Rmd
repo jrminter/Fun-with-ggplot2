@@ -1,0 +1,139 @@
+---
+title: "Test ggplot2 using Gapminder and Diamonds Dataset"
+author: "Ted Laderas and Jessica Minner and Devrim Nesipoglu"
+date: "Started 2020-03-30, Last modified: 2020-03-31"
+output:
+  html_document:
+    css: ../theme/jm-gray-vignette.css
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA)
+```
+
+The purpose of this document is to work out the `Gapminder`
+example from
+[RBootcamp](https://github.com/laderast/RBootcamp_old/blob/master/chapter1.md)
+
+```{r loadPackages, message=FALSE}
+library(dplyr)
+library(gapminder)
+library(ggplot2)
+```
+
+```{r startOne}
+gap1992 <- gapminder %>% filter(year == 1992)
+
+head(gap1992)
+
+colnames(gap1992)
+
+nrow(gap1992)
+```
+
+# First plot
+
+```{r firstPlot}
+plt <- ggplot(gap1992,
+       aes(x = log(gdpPercap),
+           y = lifeExp, size=pop, color=continent)) +
+       geom_point() +
+       ggtitle("Gapminder for 1992") +
+       NULL
+
+print(plt)
+```
+
+# Another example
+
+Plot `diamonds` data from [MEF - BDA 503](https://mef-bda503.github.io/pj-nesipoglud/files/Diamonds.html)
+
+## Diamonds dataset
+This dataset contains the prices and other attributes for around 50.000 diamonds.
+The features included are the following:
+
+```
+
+carat: Weight of the diamond
+cut: Quality of the cut (Fair/Good/Very Good/ Premium/Ideal)
+color: Diamond color, ranging from J (worst) to D (best)
+clarity: A measurement of how clear the diamond is (I1 (worst), SI1, SI2, VS1, VS2, VVS1, VVS2, IF (best))
+depth: Total depth percentage = z / mean(x, y) = 2 * z / (x + y) (43–79)
+table: Width of top of diamond relative to widest point (43–95)
+price: Price in US dollars ($326–$18,823)
+x: Length in mm (0 - 10.74)
+y: Width in mm (0 - 58.9)
+z: Depth in mm (0 - 31.8)
+```
+
+
+```{r diamonndsRata}
+data(diamonds)
+summary(diamonds)
+```
+
+
+```{r secondPlot}
+plt <-ggplot(data=diamonds) +
+      geom_histogram(binwidth=500, aes(x=price)) +
+      ggtitle("Diamond Price Distribution") +
+      xlab("Diamond Price US Dollars") +
+      ylab("Frequency") +
+      theme_minimal() +
+      NULL
+
+print(plt)
+
+```
+
+```{r thirdPlot, warning=FALSE}
+plt <- ggplot(diamonds,aes(x=carat,y=price))+
+       geom_jitter(aes(color=color,shape=cut))+
+       labs(title="comparison of carat with price based on diamond cut and color") +
+       NULL
+
+print(plt)
+```
+
+```{r plotFour, warning=FALSE, message=FALSE}
+plt <- ggplot(diamonds, aes(x=carat, y=depth, color=clarity)) +
+       geom_point(alpha=0.3) +
+       geom_smooth() +
+       theme_light() +
+       labs(title="Comparing diamond depth with carat and clarity") +
+       NULL
+
+print(plt)
+
+```
+
+```{r plotFive, warning=FALSE, message=FALSE}
+plt <- ggplot(diamonds,aes(x=cut,fill=color))+
+       geom_bar() +
+       NULL
+
+print(plt)
+```
+
+```{r plotSix, warning=FALSE, message=FALSE}
+plt <- ggplot(diamonds,aes(x=price)) +
+       geom_density(aes(fill=factor(cut)),alpha=0.7) +
+       labs(title="Price grouped by cut",x="Price",fill="Cut") +
+       NULL
+
+print(plt)
+```
+
+```{r plotSeven, warning=FALSE, message=FALSE}
+plt <- ggplot(diamonds, aes(x=clarity,y=depth)) +
+       geom_violin(aes(fill=cut)) +
+       theme_classic() +
+       labs(title="How Cut impacts depth and clarity") +
+       NULL
+
+print(plt)
+```
+
